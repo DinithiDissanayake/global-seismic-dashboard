@@ -8,7 +8,7 @@ import io
 # ── Page config ──────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Global Seismic Dashboard",
-    page_icon="🌍",
+    page_icon="eq",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -145,10 +145,10 @@ df = load_data()
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("## 🌍 Global Seismic Dashboard")
+    st.markdown("## Global Seismic Dashboard")
     st.markdown("*Analysing earthquake activity 2020–2024*")
     st.markdown("---")
-    st.markdown("### 🎛️ Filters")
+    st.markdown("### Filters")
 
     selected_years = st.multiselect(
         "Year", sorted(df['year'].unique()), default=sorted(df['year'].unique())
@@ -172,7 +172,7 @@ with st.sidebar:
     )
 
     st.markdown("---")
-    st.markdown("### ℹ️ About")
+    st.markdown("### About")
     st.markdown("""
     This dashboard presents global seismic events with magnitude ≥ 4.5 from 2020–2024.
 
@@ -193,13 +193,13 @@ if selected_continent != "All":
     filtered = filtered[filtered['continent'] == selected_continent]
 
 # ── Header ────────────────────────────────────────────────────────────────────
-st.markdown("# 🌍 Global Seismic Activity Dashboard")
+st.markdown("# Global Seismic Activity Dashboard")
 st.markdown("*Interactive analysis of worldwide earthquake events (2020–2024) for disaster resilience and sustainability planning.*")
 st.markdown("---")
 
 # ── Empty state guard ─────────────────────────────────────────────────────────
 if len(filtered) == 0:
-    st.markdown('<div class="empty-state">⚠️ No events match the current filters. Please adjust the filters in the sidebar.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="empty-state">No events match the current filters. Please adjust the filters in the sidebar.</div>', unsafe_allow_html=True)
     st.stop()
 
 # ── KPI Cards ─────────────────────────────────────────────────────────────────
@@ -223,7 +223,7 @@ for col, val, label in kpi_data:
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ── Map ───────────────────────────────────────────────────────────────────────
-st.markdown('<p class="section-title">🗺️ Global Earthquake Map</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-title">Global Earthquake Map</p>', unsafe_allow_html=True)
 
 map_sample = filtered if len(filtered) <= 15000 else filtered.sample(15000, random_state=42)
 
@@ -282,7 +282,7 @@ st.markdown("---")
 col_a, col_b = st.columns(2)
 
 with col_a:
-    st.markdown('<p class="section-title">📊 Events Per Year</p>', unsafe_allow_html=True)
+    st.markdown('<p class="section-title">Events Per Year</p>', unsafe_allow_html=True)
     yearly = filtered.groupby('year').size().reset_index(name='count')
     fig_bar = px.bar(
         yearly, x='year', y='count',
@@ -302,7 +302,7 @@ with col_a:
     st.plotly_chart(fig_bar, use_container_width=True)
 
 with col_b:
-    st.markdown('<p class="section-title">📈 Monthly Frequency Trend</p>', unsafe_allow_html=True)
+    st.markdown('<p class="section-title">Monthly Frequency Trend</p>', unsafe_allow_html=True)
     filtered['year_month'] = filtered['time'].dt.to_period('M').astype(str)
     monthly = filtered.groupby('year_month').size().reset_index(name='count')
     fig_line = px.line(
@@ -324,7 +324,7 @@ with col_b:
 col_c, col_d = st.columns(2)
 
 with col_c:
-    st.markdown('<p class="section-title">🔥 Activity Heatmap (Month × Year)</p>', unsafe_allow_html=True)
+    st.markdown('<p class="section-title">Activity Heatmap (Month × Year)</p>', unsafe_allow_html=True)
     heatmap_data = filtered.groupby(['year', 'month']).size().reset_index(name='count')
     heatmap_pivot = heatmap_data.pivot(index='month', columns='year', values='count').fillna(0)
     month_names = {1:'Jan',2:'Feb',3:'Mar',4:'Apr',5:'May',6:'Jun',
@@ -345,7 +345,7 @@ with col_c:
     st.plotly_chart(fig_heat, use_container_width=True)
 
 with col_d:
-    st.markdown('<p class="section-title">📉 Magnitude Distribution</p>', unsafe_allow_html=True)
+    st.markdown('<p class="section-title">Magnitude Distribution</p>', unsafe_allow_html=True)
     fig_hist = px.histogram(
         filtered, x='mag', nbins=35,
         color_discrete_sequence=["#E63946"],
@@ -365,7 +365,7 @@ with col_d:
 col_e, col_f = st.columns(2)
 
 with col_e:
-    st.markdown('<p class="section-title">🔵 Magnitude vs Depth</p>', unsafe_allow_html=True)
+    st.markdown('<p class="section-title">Magnitude vs Depth</p>', unsafe_allow_html=True)
     scatter_data = filtered.sample(min(5000, len(filtered)), random_state=42)
     fig_scatter = px.scatter(
         scatter_data, x='depth', y='mag',
@@ -388,7 +388,7 @@ with col_e:
     st.plotly_chart(fig_scatter, use_container_width=True)
 
 with col_f:
-    st.markdown('<p class="section-title">🌐 Events by Continent</p>', unsafe_allow_html=True)
+    st.markdown('<p class="section-title">Events by Continent</p>', unsafe_allow_html=True)
     continent_counts = filtered['continent'].value_counts().reset_index()
     continent_counts.columns = ['Continent', 'Count']
     fig_pie = px.pie(
@@ -408,7 +408,7 @@ with col_f:
 
 # ── Top Regions Bar ───────────────────────────────────────────────────────────
 st.markdown("---")
-st.markdown('<p class="section-title">📍 Top 15 Most Affected Regions</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-title">Top 15 Most Affected Regions</p>', unsafe_allow_html=True)
 top_regions = filtered['region'].value_counts().head(15).reset_index()
 top_regions.columns = ['Region', 'Count']
 fig_regions = px.bar(
@@ -431,7 +431,7 @@ st.plotly_chart(fig_regions, use_container_width=True)
 
 # ── Key Insights ──────────────────────────────────────────────────────────────
 st.markdown("---")
-st.markdown('<p class="section-title">💡 Key Insights</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-title">Key Insights</p>', unsafe_allow_html=True)
 
 busiest_year = filtered.groupby('year').size().idxmax()
 busiest_year_count = filtered.groupby('year').size().max()
@@ -443,11 +443,11 @@ avg_mag_trend = filtered.groupby('year')['mag'].mean()
 trend_dir = "increasing" if avg_mag_trend.iloc[-1] > avg_mag_trend.iloc[0] else "relatively stable"
 
 insights = [
-    ("🔴 Busiest Year", f"{busiest_year} recorded the highest seismic activity with {busiest_year_count:,} events — suggesting elevated tectonic stress during this period."),
-    ("💥 Strongest Event", f"The most powerful earthquake was magnitude {biggest_quake['mag']:.1f} near {biggest_quake['place']}, occurring in {int(biggest_quake['year'])}."),
-    ("📍 Most Active Region", f"{top_region} was the most seismically active region with {top_region_count:,} events — likely due to its position on major tectonic plate boundaries."),
-    ("🏔️ Depth Patterns", f"{pct_shallow}% of all recorded events were shallow earthquakes (0–70km depth), which are typically the most destructive to surface infrastructure."),
-    ("📈 Magnitude Trend", f"Average earthquake magnitude has been {trend_dir} over the 2020–2024 period, providing important signals for disaster preparedness planning."),
+    ("Busiest Year", f"{busiest_year} recorded the highest seismic activity with {busiest_year_count:,} events — suggesting elevated tectonic stress during this period."),
+    ("Strongest Event", f"The most powerful earthquake was magnitude {biggest_quake['mag']:.1f} near {biggest_quake['place']}, occurring in {int(biggest_quake['year'])}."),
+    ("Most Active Region", f"{top_region} was the most seismically active region with {top_region_count:,} events — likely due to its position on major tectonic plate boundaries."),
+    ("Depth Patterns", f"{pct_shallow}% of all recorded events were shallow earthquakes (0–70km depth), which are typically the most destructive to surface infrastructure."),
+    ("Magnitude Trend", f"Average earthquake magnitude has been {trend_dir} over the 2020–2024 period, providing important signals for disaster preparedness planning."),
 ]
 
 col1, col2 = st.columns(2)
@@ -462,7 +462,7 @@ for i, (title, text) in enumerate(insights):
 
 # ── Top 10 Table ──────────────────────────────────────────────────────────────
 st.markdown("---")
-st.markdown('<p class="section-title">🏆 Top 10 Strongest Earthquakes</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-title">Top 10 Strongest Earthquakes</p>', unsafe_allow_html=True)
 top10 = filtered.nlargest(10, 'mag')[['time', 'place', 'mag', 'depth', 'type', 'year']].copy()
 top10['time'] = top10['time'].dt.strftime('%Y-%m-%d %H:%M UTC')
 top10['depth'] = top10['depth'].round(1).astype(str) + ' km'
@@ -473,13 +473,13 @@ st.markdown(top10.to_html(), unsafe_allow_html=True)
 
 # ── Download ──────────────────────────────────────────────────────────────────
 st.markdown("---")
-st.markdown('<p class="section-title">⬇️ Export Filtered Data</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-title">Export Filtered Data</p>', unsafe_allow_html=True)
 col_dl1, col_dl2, col_dl3 = st.columns([1, 1, 2])
 with col_dl1:
     csv_buffer = io.StringIO()
     filtered.to_csv(csv_buffer, index=False)
     st.download_button(
-        label=f"📥 Download CSV ({len(filtered):,} rows)",
+        label=f"Download CSV ({len(filtered):,} rows)",
         data=csv_buffer.getvalue(),
         file_name=f"earthquakes_filtered_{datetime.now().strftime('%Y%m%d')}.csv",
         mime="text/csv"
